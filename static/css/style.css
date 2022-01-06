@@ -1,0 +1,16 @@
+body {
+  background-color: #272727;
+  padding: 10px;
+}
+
+#main-head {
+  color: #9CD9F0
+}
+
+.text {
+  position: relative;
+  text-align: left;
+  font-family: monospace;
+  white-space: normal;
+  overflow: hidden;
+}

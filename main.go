@@ -97,6 +97,9 @@ func main() {
 	r.HandleFunc("/static/js/app.js", func(rw http.ResponseWriter, r *http.Request) {
 		http.ServeFile(rw, r, "static/js/app.js")
 	})
+	r.HandleFunc("/static/css/style.css", func(rw http.ResponseWriter, r *http.Request) {
+		http.ServeFile(rw, r, "static/css/style.css")
+	})
 	// r.Handle("/", fs)
 	r.HandleFunc("/all", ReturnAllArticles)
 	r.HandleFunc("/evenUp", EvenUpHandler).Methods("POST")
