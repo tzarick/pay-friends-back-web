@@ -12,7 +12,23 @@
 </head>
 
 <body>
-  <h1 id="main-head" class="text">PFB</h1>
+  <h1 id="main-head" class="display-text">PFB</h1>
+  <div id="inputForm">
+    <div id="inputRows">
+      <div class="input-group mb-3 txInput">
+        <input type="text" class="friendName txInputElement" placeholder="Friend Name" aria-label="Friend Name">
+        <span class="display-text divider"> spent </span>
+        <input type="number" step="0.01" min="0.00" class="amountSpent txInputElement" placeholder="Amount Spent"
+          aria-label="Amount Spent">
+      </div>
+
+    </div>
+
+    <div id="controlPane">
+      <button id="newFriend" onclick="addInputRow()">+</button>
+    </div>
+  </div>
+
   <button onclick="evenUp()">
     Even Up
   </button>

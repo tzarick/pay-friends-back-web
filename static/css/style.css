@@ -3,7 +3,7 @@ body {
   padding: 10px;
 }
 
-#main-head {
+.display-text {
   color: #9CD9F0
 }
 
@@ -13,4 +13,10 @@ body {
   font-family: monospace;
   white-space: normal;
   overflow: hidden;
+}
+
+.divider {
+    border-width: 10px;
+    /* margin-left: 2em; */
+    /* margin-right: 2em; */
 }

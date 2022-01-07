@@ -1,0 +1,5 @@
+package evenup
+
+func calculate() {
+
+}
