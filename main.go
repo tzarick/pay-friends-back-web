@@ -6,14 +6,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/tzarick/pay-friends-back-web/evenup"
 )
-
-type InitialLedger struct {
-	Names         []string
-	PaymentValues []float32
-}
 
 // === client/server communication-layer data structures ===
 type IncomingPayload struct {
@@ -24,12 +22,60 @@ type IncomingPayload struct {
 }
 
 type OutgoingResponse struct {
-	Ok       bool     `json:"oKay"`
+	Ok       bool     `json:"ok"`
 	ErrorMsg string   `json:"errorMsg"`
 	TxList   []string `json:"txList"`
 }
 
 //// ===
+
+// helpers
+
+func extractInput(payload IncomingPayload) (evenup.InitialLedger, error) {
+	initialLedgerRaw := payload.Data
+
+	names := initialLedgerRaw.FriendNames
+	amounts := make([]float32, len(initialLedgerRaw.PaymentAmounts))
+
+	for i, v := range initialLedgerRaw.PaymentAmounts {
+		paymentValue, err := strconv.ParseFloat(v, 32)
+		if err != nil {
+			return evenup.InitialLedger{}, fmt.Errorf("something went wrong while accessing the request body: %v", err)
+		}
+
+		amounts[i] = float32(paymentValue)
+	}
+
+	return evenup.InitialLedger{
+		Names:         names,
+		PaymentValues: amounts,
+	}, nil
+}
+
+func validateInput(initialLedger evenup.InitialLedger) (ok bool, msg string) {
+	ok = false
+	msg = ""
+
+	if len(initialLedger.Names) < 2 {
+		msg = "Must have more than 1 friend, sorry :/"
+		return ok, msg
+	}
+
+	for i := range initialLedger.Names {
+		if len(strings.TrimSpace(initialLedger.Names[i])) == 0 {
+			msg = fmt.Sprintf("(friend input #%v): Name field cannot be empty", i+1)
+			return ok, msg
+		} else if initialLedger.PaymentValues[i] < 0 {
+			msg = fmt.Sprintf("(friend input #%v): Amount spent field cannot be negative", i+1)
+			return ok, msg
+		}
+	}
+
+	ok = true
+	return ok, msg
+}
+
+// handlers
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/index.html")
@@ -38,14 +84,42 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, err := ioutil.ReadAll(r.Body) // get the body of the POST request
 	if err != nil {
-		log.Fatalf("Something went wrong while accessing the request body: %v", err)
+		fmt.Printf("Something went wrong while accessing the request body: %v\n", err)
+		http.Error(w, "Something went wrong while accessing the request body", http.StatusInternalServerError)
+		return
 	}
 
 	var jsonPayload IncomingPayload
 	json.Unmarshal(reqBody, &jsonPayload)
 
-	initialLedger := jsonPayload.Data // this is the initial state. An index of who paid what
+	initialLedger, err := extractInput(jsonPayload) // this is the initial state. An index of who paid what
+	if err != nil {
+		fmt.Printf("Something went wrong while extracting input: %v\n", err)
+		http.Error(w, "Something went wrong while extracting input", http.StatusInternalServerError)
+		return
+	}
+
 	fmt.Printf("%+v\n", initialLedger)
+
+	// make sure we have a clean / usable initial state before we do work on it
+	if ok, msg := validateInput(initialLedger); !ok {
+		// send the client useful error information about why we can't process the request
+		errorResponse := OutgoingResponse{
+			Ok:       ok,
+			ErrorMsg: msg,
+			TxList:   []string{},
+		}
+
+		jsonErrorResponse, err := json.Marshal(errorResponse)
+		if err != nil {
+			fmt.Printf("Something went wrong while preparing to send data back to client: %v\n", err)
+			http.Error(w, "Something went wrong while preparing to send data back to client", http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(jsonErrorResponse)
+		return
+	}
 
 	// even up here via evenup package, passing in our initial ledger and get a response to send back
 
@@ -55,7 +129,13 @@ func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 		TxList:   []string{"somebody pays somebody $x", "they pay them $y", "capt james pays jimbo $z"},
 	}
 
-	jsonResponse, _ := json.Marshal(someResponse)
+	jsonResponse, err := json.Marshal(someResponse)
+	if err != nil {
+		fmt.Printf("Something went wrong while preparing to send data back to client: %v\n", err)
+		http.Error(w, "Something went wrong while preparing to send data back to client", http.StatusInternalServerError)
+		return
+	}
+
 	w.Write(jsonResponse)
 }
 

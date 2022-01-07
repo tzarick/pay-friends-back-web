@@ -8,7 +8,14 @@ function evenUp() {
   console.log("friends: "  + friends);
 
   const amountSpentElements = document.getElementsByClassName("amountSpent");
-  const amountsSpent = Array.from(amountSpentElements).map((item) => item.value);
+  const amountsSpent = Array.from(amountSpentElements).map((item) => item.value).map((item, i) => {
+    // default to 0 if the value was left blank
+    if (item === "") {
+      amountSpentElements[i].value = 0;
+      item = "0"
+    }
+    return item;
+  });
   console.log("amounts spent: " + amountsSpent);
   
   axios.post('/evenUp', {
@@ -23,6 +30,7 @@ function evenUp() {
 
 }
 
+// add a new input row at the bottom
 function addInputRow() {
   const inputRow = document.getElementsByClassName("txInput")[0];
 
@@ -35,4 +43,12 @@ function addInputRow() {
   }
 
   document.getElementById("inputRows").append(newInputRow);
+}
+
+// remove the last input row
+function removeInputRow() {
+  const rows = document.getElementsByClassName("txInput");
+  if (rows.length > 1) {
+    rows[rows.length - 1].remove();
+  }
 }
