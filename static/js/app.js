@@ -25,6 +25,9 @@ function evenUp() {
      }
   }).then((response) => {
     console.log(response);
+    // check response.ok to see if the server successfully processed our request.
+    // if yes, add the txList data to the output display
+    // if no, add the errorMsg to the output display
   })
 
 

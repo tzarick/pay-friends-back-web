@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/tzarick/pay-friends-back-web/evenup"
 )
 
@@ -52,6 +53,17 @@ func extractInput(payload IncomingPayload) (evenup.InitialLedger, error) {
 	}, nil
 }
 
+func sanitizeInput(payload *IncomingPayload) {
+	sanitizer := bluemonday.UGCPolicy()
+	for i := range payload.Data.FriendNames {
+		payload.Data.FriendNames[i] = sanitizer.Sanitize(payload.Data.FriendNames[i])
+	}
+
+	for i := range payload.Data.PaymentAmounts {
+		payload.Data.PaymentAmounts[i] = sanitizer.Sanitize(payload.Data.PaymentAmounts[i])
+	}
+}
+
 func validateInput(initialLedger evenup.InitialLedger) (ok bool, msg string) {
 	ok = false
 	msg = ""
@@ -91,6 +103,8 @@ func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	var jsonPayload IncomingPayload
 	json.Unmarshal(reqBody, &jsonPayload)
+
+	sanitizeInput(&jsonPayload)
 
 	initialLedger, err := extractInput(jsonPayload) // this is the initial state. An index of who paid what
 	if err != nil {
