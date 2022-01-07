@@ -41,7 +41,7 @@ func extractInput(payload IncomingPayload) (evenup.InitialLedger, error) {
 	for i, v := range initialLedgerRaw.PaymentAmounts {
 		paymentValue, err := strconv.ParseFloat(v, 32)
 		if err != nil {
-			return evenup.InitialLedger{}, fmt.Errorf("something went wrong while accessing the request body: %v", err)
+			return evenup.InitialLedger{}, fmt.Errorf("something went wrong while converting user input payment strings -> floats: %v", err)
 		}
 
 		amounts[i] = float32(paymentValue)
