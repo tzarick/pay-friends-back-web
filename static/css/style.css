@@ -4,7 +4,8 @@ body {
 }
 
 .display-text {
-  color: #9CD9F0
+  color: #9CD9F0;
+  white-space: pre-line; /* allow for `\n` new lines */
 }
 
 .text {

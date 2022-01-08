@@ -111,8 +111,6 @@ func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("%+v\n", initialLedger)
-
 	// make sure we have a clean / usable initial state before we do work on it
 	if ok, msg := validateInput(initialLedger); !ok {
 		// send the client useful error information about why we can't process the request
