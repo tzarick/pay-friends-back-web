@@ -23,9 +23,9 @@ type IncomingPayload struct {
 }
 
 type OutgoingResponse struct {
-	Ok       bool     `json:"ok"`
-	ErrorMsg string   `json:"errorMsg"`
-	TxList   []string `json:"txList"`
+	Ok           bool     `json:"ok"`
+	ErrorMsg     string   `json:"errorMsg"`
+	Transactions []string `json:"transactions"`
 }
 
 //// ===
@@ -96,8 +96,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, err := ioutil.ReadAll(r.Body) // get the body of the POST request
 	if err != nil {
-		fmt.Printf("Something went wrong while accessing the request body: %v\n", err)
-		http.Error(w, "Something went wrong while accessing the request body", http.StatusInternalServerError)
+		internalServerError(w, "Something went wrong while accessing the request body", err)
 		return
 	}
 
@@ -108,8 +107,7 @@ func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	initialLedger, err := extractInput(jsonPayload) // this is the initial state. An index of who paid what
 	if err != nil {
-		fmt.Printf("Something went wrong while extracting input: %v\n", err)
-		http.Error(w, "Something went wrong while extracting input", http.StatusInternalServerError)
+		internalServerError(w, "Something went wrong while extracting input", err)
 		return
 	}
 
@@ -119,15 +117,14 @@ func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 	if ok, msg := validateInput(initialLedger); !ok {
 		// send the client useful error information about why we can't process the request
 		errorResponse := OutgoingResponse{
-			Ok:       ok,
-			ErrorMsg: msg,
-			TxList:   []string{},
+			Ok:           ok,
+			ErrorMsg:     msg,
+			Transactions: []string{},
 		}
 
 		jsonErrorResponse, err := json.Marshal(errorResponse)
 		if err != nil {
-			fmt.Printf("Something went wrong while preparing to send data back to client: %v\n", err)
-			http.Error(w, "Something went wrong while preparing to send data back to client", http.StatusInternalServerError)
+			internalServerError(w, "Something went wrong while preparing to send data back to client", err)
 			return
 		}
 
@@ -136,21 +133,30 @@ func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// even up here via evenup package, passing in our initial ledger and get a response to send back
-
-	someResponse := OutgoingResponse{
-		Ok:       true,
-		ErrorMsg: "",
-		TxList:   []string{"somebody pays somebody $x", "they pay them $y", "capt james pays jimbo $z"},
+	transactions, err := evenup.CalculateTransactions(initialLedger)
+	if err != nil {
+		internalServerError(w, "Something went wrong while calculating transactions", err)
+		return
 	}
 
-	jsonResponse, err := json.Marshal(someResponse)
+	response := OutgoingResponse{
+		Ok:           true,
+		ErrorMsg:     "",
+		Transactions: transactions,
+	}
+
+	jsonResponse, err := json.Marshal(response)
 	if err != nil {
-		fmt.Printf("Something went wrong while preparing to send data back to client: %v\n", err)
-		http.Error(w, "Something went wrong while preparing to send data back to client", http.StatusInternalServerError)
+		internalServerError(w, "Something went wrong while preparing to send data back to client", err)
 		return
 	}
 
 	w.Write(jsonResponse)
+}
+
+func internalServerError(w http.ResponseWriter, msg string, err error) {
+	fmt.Printf("%s: %v\n", msg, err)
+	http.Error(w, msg, http.StatusInternalServerError)
 }
 
 func serveStaticResources(r *mux.Router) {
