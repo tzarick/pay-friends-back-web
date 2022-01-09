@@ -1,5 +1,3 @@
-console.log("Running Pay Friends Back...");
-
 const resultDivId = "results";
 
 function evenUp() {
@@ -7,10 +5,9 @@ function evenUp() {
 
   const nameElements = document.getElementsByClassName("friendName");
   const friends = Array.from(nameElements).map((item) => item.value);
-  console.log("friends: "  + friends);
 
   const amountSpentElements = document.getElementsByClassName("amountSpent");
-  const amountsSpent = Array.from(amountSpentElements).map((item) => item.value).map((item, i) => {
+  const spentValues = Array.from(amountSpentElements).map((item) => item.value).map((item, i) => {
     // default to 0 if the value was left blank
     if (item === "") {
       amountSpentElements[i].value = 0;
@@ -18,12 +15,11 @@ function evenUp() {
     }
     return item;
   });
-  console.log("amounts spent: " + amountsSpent);
   
   axios.post('/evenUp', {
     data: {
       friends: friends,
-      amounts: amountsSpent
+      amounts: spentValues
      }
   }).then((response) => {
     // expected tx format: "[name1] pays [name2] $[x]"
