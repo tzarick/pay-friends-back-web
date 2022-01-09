@@ -12,32 +12,61 @@
 </head>
 
 <body>
-  <h1 id="main-head" class="display-text">PFB</h1>
-  <div id="inputForm">
-    <div id="inputRows">
-      <div class="input-group mb-3 txInput">
-        <input type="text" class="friendName txInputElement" placeholder="Friend Name" aria-label="Friend Name">
-        <span class="display-text divider"> spent </span>
-        <input type="number" step="0.01" min="0.00" class="amountSpent txInputElement" placeholder="Amount Spent"
-          aria-label="Amount Spent">
+  <div id="main" class="container px-4 justify-content-center">
+
+    <div id="inputForm" class="row-sm justify-content-center">
+      <div class="col">
+        <div class="row justify-content-center">
+          <div class="col">
+            <h1 id="main-head" class="text-center display-text">Pay Friends Back</h1>
+            <p class="text-center display-text opacity-75">An easy square-up tool.</p>
+          </div>
+        </div>
+
+        <div id="inputRowsParent" class="row justify-content-center">
+          <div id="inputRows" class="col">
+            <div class="row txInput justify-content-center">
+              <div class="col justify-content-center">
+                <div class="row input-group mb-3 justify-content-center">
+                  <input type="text" class="friendName txInputElement col-sm-2 rounded" placeholder="friend name"
+                    aria-label="friendName">
+                  <span class="col-auto text-center display-text divider"> spent </span>
+                  <input type="number" step="0.01" min="0.00" class="col-sm-2 amountSpent txInputElement rounded"
+                    placeholder="amount spent" aria-label="amount spent">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="controlPane" class="row justify-content-center">
+          <!-- <div class="btn-group col-sm-2 rounded-pill justify-content-center" role="group" aria-label="controlButtons"> -->
+          <div class="col-sm-2">
+            <button type="button" class="btn btn-secondary ctrl-button rounded-pill" id="newFriend"
+              onclick="addInputRow()">+</button>
+            <!-- <span class=""></span> -->
+            <button type="button" class="btn btn-secondary ctrl-button rounded-pill" id="removeFriend"
+              onclick="removeInputRow()">-</button>
+          </div>
+
+          <!-- <button type="button" class="btn btn-outline-primary">Left</button>
+            <button type="button" class="btn btn-outline-primary">Middle</button>
+            <button type="button" class="btn btn-outline-primary">Right</button> -->
+          <!-- </div> -->
+        </div>
+
       </div>
-
     </div>
 
-    <div id="controlPane">
-      <button clas="button" id="newFriend" onclick="addInputRow()">+</button>
-      <button class="button" id="removeFriend" onclick="removeInputRow()">-</button>
+    <button class="button" onclick="evenUp()">
+      Even Up
+    </button>
+
+    <div class="display-text" id="results">
+      <!-- <p class="display-text" id="results-p"></p> -->
     </div>
+
   </div>
-
-  <button class="button" onclick="evenUp()">
-    Even Up
-  </button>
-
-  <div class="display-text" id="results">
-    <!-- <p class="display-text" id="results-p"></p> -->
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"></script>

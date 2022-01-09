@@ -34,11 +34,11 @@ function evenUp() {
     // if no, add the errorMsg to the output display
     if (response.data.ok) {
       resultsDiv.innerHTML = response.data.transactions
-        .map(item => { // make the names show up as bold
-          const firstNameBold = "<strong>" + item.slice(0, item.indexOf("pays")) + "</strong>";
-          const secondNameBold = "<strong>" + item.slice(item.indexOf("pays") + 4, item.indexOf("$")) + "</strong>";
-          return firstNameBold + "pays" + secondNameBold + item.slice(item.indexOf("$"));
-        }) 
+        // .map(item => { // make the names show up as bold
+        //   const firstNameBold = "<strong>" + item.slice(0, item.indexOf("pays")) + "</strong>";
+        //   const secondNameBold = "<strong>" + item.slice(item.indexOf("pays") + 4, item.indexOf("$")) + "</strong>";
+        //   return firstNameBold + "pays" + secondNameBold + item.slice(item.indexOf("$"));
+        // }) 
         .join("\n");
     } else {
       resultsDiv.innerHTML = response.data.errorMsg;

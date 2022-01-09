@@ -21,3 +21,7 @@ body {
     /* margin-left: 2em; */
     /* margin-right: 2em; */
 }
+
+.ctl-button {
+  background-color: #9CD9F0;
+}
