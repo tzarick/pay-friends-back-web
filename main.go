@@ -69,18 +69,30 @@ func validateInput(initialLedger evenup.InitialLedger) (ok bool, msg string) {
 	msg = ""
 
 	if len(initialLedger.Names) < 2 {
-		msg = "Must have more than 1 friend, sorry :/"
+		msg = "Must have more than 1 friend, sorry :("
 		return ok, msg
 	}
 
+	alreadyEven := true
 	for i := range initialLedger.Names {
 		if len(strings.TrimSpace(initialLedger.Names[i])) == 0 {
-			msg = fmt.Sprintf("(friend input #%v): Name field cannot be empty", i+1)
+			msg = fmt.Sprintf("Name field cannot be empty (friend input #%v)", i+1)
 			return ok, msg
 		} else if initialLedger.PaymentValues[i] < 0 {
-			msg = fmt.Sprintf("(friend input #%v): Amount spent field cannot be negative", i+1)
+			msg = fmt.Sprintf("Amount spent field cannot be negative (friend input #%v)", i+1)
 			return ok, msg
 		}
+
+		// check to make sure all the values are not the same -> otherwise no evening up is required
+		if i != len(initialLedger.Names)-1 {
+			if initialLedger.PaymentValues[i] != initialLedger.PaymentValues[i+1] {
+				alreadyEven = false
+			}
+		}
+	}
+
+	if alreadyEven {
+		return ok, "Already even! Nice!"
 	}
 
 	ok = true
