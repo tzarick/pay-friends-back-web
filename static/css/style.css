@@ -8,20 +8,30 @@ body {
   white-space: pre-line; /* allow for `\n` new lines */
 }
 
-.text {
-  position: relative;
-  text-align: left;
-  font-family: monospace;
-  white-space: normal;
-  overflow: hidden;
+.txInputElement {
+  text-align: center;
 }
 
 .divider {
     border-width: 10px;
-    /* margin-left: 2em; */
-    /* margin-right: 2em; */
 }
 
-.ctl-button {
+.ctrl-button:hover {
   background-color: #9CD9F0;
+}
+
+.ctrl-button {
+  text-align: center;
+}
+
+#submitBtn:hover {
+  background-color: #76f586;
+}
+
+/* #resultsRow {
+  padding-top: ;
+} */
+
+li {
+  margin: 0px 0;
 }

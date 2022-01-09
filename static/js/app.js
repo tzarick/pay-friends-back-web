@@ -1,5 +1,7 @@
 console.log("Running Pay Friends Back...");
 
+const resultDivId = "results";
+
 function evenUp() {
   console.log("Evening up...");
 
@@ -25,24 +27,26 @@ function evenUp() {
      }
   }).then((response) => {
     // expected tx format: "[name1] pays [name2] $[x]"
-    console.log(JSON.stringify(response.data));
-    console.log(response.data.transactions);
-    const resultsDiv = document.getElementById("results");
+    const resultsDiv = document.getElementById(resultDivId);
     
     // check response.ok to see if the server successfully processed our request.
-    // if yes, add the txList data to the output display
-    // if no, add the errorMsg to the output display
     if (response.data.ok) {
-      resultsDiv.innerHTML = response.data.transactions
-        // .map(item => { // make the names show up as bold
+      resultsDiv.innerHTML = response.data.transactions.join("\n")
+        // .map(item => { // if we want to make the names show up as bold
         //   const firstNameBold = "<strong>" + item.slice(0, item.indexOf("pays")) + "</strong>";
         //   const secondNameBold = "<strong>" + item.slice(item.indexOf("pays") + 4, item.indexOf("$")) + "</strong>";
         //   return firstNameBold + "pays" + secondNameBold + item.slice(item.indexOf("$"));
         // }) 
-        .join("\n");
+        // .map(item => "<li>" + item + "</li>") // if we want a bulleted list
     } else {
       resultsDiv.innerHTML = response.data.errorMsg;
     }
+
+    // flash the result div to signal that something happened (useful when the result has not changed)
+    changeDivColor(resultDivId, "#4a4646"); 
+    setTimeout(() => { 
+        changeDivColor(resultDivId, "#272727"); // then change it back
+    }, 100);
   })
 }
 
@@ -59,6 +63,7 @@ function addInputRow() {
   }
 
   document.getElementById("inputRows").append(newInputRow);
+  newInputRow.getElementsByClassName("friendName")[0].focus(); // focus on the friend name as this is probably where the user would click next
 }
 
 // remove the last input row
@@ -67,4 +72,8 @@ function removeInputRow() {
   if (rows.length > 1) { // don't do anything if there's only one left
     rows[rows.length - 1].remove();
   }
+}
+
+function changeDivColor(id, color) {
+  document.getElementById(id).style.backgroundColor = color;
 }
