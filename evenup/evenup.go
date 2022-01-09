@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strings"
 )
 
 type InitialLedger struct {
@@ -87,7 +88,15 @@ func buildTransactionList(debts []float32, friends []string) []string {
 		}
 	}
 
-	return transactions
+	// get rid of any $0 transactions. TODO: find the actual issue elsewhere where these are introduced - this really shouldn't be happening in the first place
+	transactionsClean := make([]string, 0)
+	for _, v := range transactions {
+		if !strings.Contains(v, "$0.00") {
+			transactionsClean = append(transactionsClean, v)
+		}
+	}
+
+	return transactionsClean
 }
 
 // sort both debts and friends based on debts in ascending order (neg to pos === [is owed] to [owes])
@@ -118,7 +127,7 @@ func sortFriendsByDebt(friends []string, debts []float32) {
 // modifies debts
 // assumes debts is sorted asc
 func clearEasyMatches(debts []float32, friends []string, transactions []string, i, j int) []string {
-	for debts[i] < 0 {
+	for debts[i] <= -0.01 /*zero*/ {
 		for debts[j] >= abs(debts[i]) {
 			if isZero(debts[j] - abs(debts[i])) {
 				transactions = append(transactions, fmt.Sprintf("%s pays %s $%.2f", friends[j], friends[i], debts[j]))

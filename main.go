@@ -94,6 +94,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EvenUpHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Even-up requested...")
 	reqBody, err := ioutil.ReadAll(r.Body) // get the body of the POST request
 	if err != nil {
 		internalServerError(w, "Something went wrong while accessing the request body", err)
