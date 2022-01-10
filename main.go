@@ -185,13 +185,8 @@ func serveStaticResources(r *mux.Router) {
 }
 
 func main() {
-	env := flag.String("env", "prod", "environment to run (dev or prod)")
+	port := flag.Int("port", 3000, "Port to run on - defaults to 3000")
 	flag.Parse()
-
-	port := 0 // some server default here
-	if *env == "dev" {
-		port = 3000
-	}
 
 	r := mux.NewRouter().StrictSlash(true)
 
@@ -199,6 +194,6 @@ func main() {
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/evenUp", EvenUpHandler).Methods("POST")
 
-	fmt.Printf("Running on port %v...\n", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), r))
+	fmt.Printf("Running on port %v...\n", *port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", *port), r))
 }

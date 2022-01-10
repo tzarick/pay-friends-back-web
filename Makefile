@@ -1,4 +1,4 @@
-BINARY_NAME=pay-friends-back.exe
+BINARY_NAME=bin/pay-friends-back
 
 .PHONY: all build run qrun test clean
 
@@ -8,10 +8,10 @@ build:
 	go build -o ${BINARY_NAME} .
 
 run:
-	./${BINARY_NAME} -env=dev
+	./${BINARY_NAME}
 
 qrun:
-	go run . -env=dev
+	go run .
 
 test:
 	go test ./... -v
