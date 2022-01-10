@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -184,12 +185,20 @@ func serveStaticResources(r *mux.Router) {
 }
 
 func main() {
+	env := flag.String("env", "prod", "environment to run (dev or prod)")
+	flag.Parse()
+
+	port := 0 // some server default here
+	if *env == "dev" {
+		port = 3000
+	}
+
 	r := mux.NewRouter().StrictSlash(true)
 
 	serveStaticResources(r)
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/evenUp", EvenUpHandler).Methods("POST")
 
-	fmt.Println("Running on port 3000...")
-	log.Fatal(http.ListenAndServe(":3000", r))
+	fmt.Printf("Running on port %v...\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), r))
 }

@@ -8,10 +8,10 @@ build:
 	go build -o ${BINARY_NAME} .
 
 run:
-	./${BINARY_NAME}
+	./${BINARY_NAME} -env=dev
 
 qrun:
-	go run .
+	go run . -env=dev
 
 test:
 	go test ./... -v
