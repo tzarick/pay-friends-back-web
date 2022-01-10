@@ -1,1 +1,1 @@
-web: bin/payfriendsback -port=$PORT
+web: bin/pay-friends-back-web -port=$PORT
