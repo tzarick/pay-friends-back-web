@@ -182,6 +182,9 @@ func serveStaticResources(r *mux.Router) {
 	r.HandleFunc("/favicon.ico", func(rw http.ResponseWriter, r *http.Request) {
 		http.ServeFile(rw, r, "static/img/favicon.ico")
 	})
+	r.HandleFunc("/static/img/github-logo.png", func(rw http.ResponseWriter, r *http.Request) {
+		http.ServeFile(rw, r, "static/img/github-logo.png")
+	})
 }
 
 func main() {

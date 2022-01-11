@@ -28,3 +28,7 @@ body {
 #submitBtn:hover {
   background-color: #76f586;
 }
+
+#github-logo:hover {
+  opacity: 30%;
+}
