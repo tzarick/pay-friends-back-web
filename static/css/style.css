@@ -13,10 +13,6 @@ body {
   text-align: center;
 }
 
-.divider {
-    border-width: 10px;
-}
-
 .ctrl-button:hover {
   background-color: #9CD9F0;
 }
