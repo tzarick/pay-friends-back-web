@@ -27,11 +27,11 @@ The guiding principle of "Clean and Simple" for this project also helped me sett
 
 
 ## ?! Question Zone ?!
+- Is this idiomatic Go, generally speaking? Would love to know where it isn't or where it might be improved.
+- Should or could the server logic take advantage of goroutines? Does the router already take care of that under the hood for me? Would this matter if there was a high amount of traffic or would it just increase the efficiency for a single hit?
 - Sanitizing input? Is this necessary here?
 	- What else should or could I be doing from a security standpoint (there's no state storage or db or anything like that really, so I wasn't sure how else I could improve it but I'd like to know how to max that knob out, hypothetically)
 	- Best / preferred Go strategies for these types of things / general application security?
 - Serving static files - what's the best way in Go? I know I'm not doing this optimally at the moment
-- Should or could the server logic take advantage of goroutines? Does the router already take care of that under the hood for me? Would this matter if there was a high amount of traffic or would it just increase the efficiency for a single hit?
-- Is this idiomatic Go, generally speaking? Would love to know where it isn't or where it might be improved.
 - Core algorithm efficiency
 - How else might the architecture of this project be improved? 
